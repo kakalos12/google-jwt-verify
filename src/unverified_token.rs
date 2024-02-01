@@ -1,9 +1,14 @@
 use std::{
-    sync::{Arc, Mutex},
+    sync::Arc,
     time::{SystemTime, UNIX_EPOCH},
 };
 
 use serde::Deserialize;
+#[cfg(feature = "blocking")]
+use std::sync::Mutex;
+
+#[cfg(feature = "async")]
+use tokio::sync::Mutex;
 
 #[cfg(feature = "async")]
 use crate::key_provider::AsyncKeyProvider;
@@ -33,10 +38,10 @@ where
         let encoded_payload = segments.next().ok_or(Error::InvalidToken)?;
         let encoded_signature = segments.next().ok_or(Error::InvalidToken)?;
 
-        let header: Header = serde_json::from_slice(&base64_decode(&encoded_header)?)?;
+        let header: Header = serde_json::from_slice(&base64_decode(encoded_header)?)?;
         let signed_body = format!("{}.{}", encoded_header, encoded_payload);
-        let signature = base64_decode(&encoded_signature)?;
-        let payload = base64_decode(&encoded_payload)?;
+        let signature = base64_decode(encoded_signature)?;
+        let payload = base64_decode(encoded_payload)?;
         let claims: RequiredClaims = serde_json::from_slice(&payload)?;
         if claims.get_audience() != client_id {
             return Err(Error::InvalidToken);
@@ -72,13 +77,14 @@ impl<P> UnverifiedToken<P> {
         let key_id = self.header.key_id.clone();
         self.verify_with_key(key_provider.lock().unwrap().get_key(&key_id))
     }
+
     #[cfg(feature = "async")]
     pub async fn verify_async<KP: AsyncKeyProvider>(
         self,
         key_provider: &Arc<Mutex<KP>>,
     ) -> Result<Token<P>, Error> {
         let key_id = self.header.key_id.clone();
-        self.verify_with_key(key_provider.lock().unwrap().get_key_async(&key_id).await)
+        self.verify_with_key(key_provider.lock().await.get_key_async(&key_id).await)
     }
     fn verify_with_key(self, key: Result<Option<JsonWebKey>, ()>) -> Result<Token<P>, Error> {
         let key = match key {

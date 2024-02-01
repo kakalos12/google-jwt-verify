@@ -9,7 +9,13 @@ use crate::token::Token;
 use crate::unverified_token::UnverifiedToken;
 use serde::Deserialize;
 
-use std::sync::{Arc, Mutex};
+use std::sync::Arc;
+
+#[cfg(feature = "blocking")]
+use std::sync::Mutex;
+
+#[cfg(feature = "async")]
+use tokio::sync::Mutex;
 
 pub type Client = GenericClient<GoogleKeyProvider>;
 

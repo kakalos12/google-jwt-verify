@@ -12,8 +12,10 @@ mod unverified_token;
 
 pub use crate::client::Client;
 pub use crate::token::{IdPayload, RequiredClaims, Token};
+use base64::{engine::general_purpose::URL_SAFE, Engine as _};
+
 pub use error::Error;
 
 fn base64_decode(input: &str) -> Result<Vec<u8>, base64::DecodeError> {
-    base64::decode_config(&input, base64::URL_SAFE)
+    URL_SAFE.decode(input)
 }
