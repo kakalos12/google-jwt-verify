@@ -1,5 +1,6 @@
 use serde_derive::Deserialize;
 
+#[derive(Debug)]
 pub struct Token<P> {
     required_claims: RequiredClaims,
     payload: P,
@@ -20,7 +21,7 @@ impl<P> Token<P> {
     }
 }
 
-#[derive(Deserialize, Clone)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct RequiredClaims {
     #[serde(rename = "iss")]
     issuer: String,
