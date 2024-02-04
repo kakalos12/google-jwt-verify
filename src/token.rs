@@ -67,11 +67,11 @@ impl RequiredClaims {
 pub struct IdPayload {
     email: Option<String>,
     email_verified: Option<bool>,
-    name: String,
-    picture: String,
-    given_name: String,
-    family_name: String,
-    locale: String,
+    name: Option<String>,
+    picture: Option<String>,
+    given_name: Option<String>,
+    family_name: Option<String>,
+    locale: Option<String>,
     hd: Option<String>,
 }
 
@@ -82,19 +82,19 @@ impl IdPayload {
     pub fn is_email_verified(&self) -> Option<bool> {
         self.email_verified
     }
-    pub fn get_name(&self) -> String {
+    pub fn get_name(&self) -> Option<String> {
         self.name.clone()
     }
-    pub fn get_picture_url(&self) -> String {
+    pub fn get_picture_url(&self) -> Option<String> {
         self.picture.clone()
     }
-    pub fn get_given_name(&self) -> String {
+    pub fn get_given_name(&self) -> Option<String> {
         self.given_name.clone()
     }
-    pub fn get_family_name(&self) -> String {
+    pub fn get_family_name(&self) -> Option<String> {
         self.family_name.clone()
     }
-    pub fn get_locale(&self) -> String {
+    pub fn get_locale(&self) -> Option<String> {
         self.locale.clone()
     }
     pub fn get_domain(&self) -> Option<String> {
