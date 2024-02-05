@@ -94,7 +94,7 @@ impl IdPayload {
     pub fn get_family_name(&self) -> Option<String> {
         self.family_name.clone()
     }
-    // pub fn get_locale(&self) -> Option<String> {
+    pub fn get_locale(&self) -> Option<String> {
         self.locale.clone()
     }
     pub fn get_domain(&self) -> Option<String> {
